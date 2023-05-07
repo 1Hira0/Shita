@@ -16,7 +16,7 @@ function App() {
           className={`p-4 my-2 w-[50vw] text-blue-500 rounded-full ${theme === 'dark' ? "bg-gray-100 placeholder:text-gray-900" : "bg-gray-900 placeholder:text-gray-100"}`}
           onChange={(e) => setUrl(e.target.value)} 
           id="rawLink"/>
-        <p id="eroor" className={`${"color:red"}`}></p> //idk how to change color
+        <p id="eroor" className="text-red-400"></p> 
         <button
           className={`${url.length == 0 ? 'cursor-not-allowed' : 'cursor-pointer'} transition-all duration-300 ease-in-out p-2 px-3 my-2 text-xl rounded-full border-2 ${theme === 'dark' ? "bg-gray-100 text-gray-900 hover:bg-gray-900 hover:border-gray-100 hover:text-gray-100" : "bg-gray-900 text-gray-100 hover:bg-gray-100 hover:border-gray-900 hover:text-gray-900"}`}
           onClick={() => { console.log("clicked");formatLink(document.querySelector<HTMLInputElement>('#rawLink')!, document.querySelector<HTMLParagraphElement>('#eroor')!)}}>Download Manga</button>
