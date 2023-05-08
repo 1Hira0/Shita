@@ -1,4 +1,4 @@
-import { Manga } from "../mangaOut";
+import { Manga } from "../mangaType.ts";
 import {RKEY} from "./env.ts"
 
 export async function Manganato(MangaPath:string) {
