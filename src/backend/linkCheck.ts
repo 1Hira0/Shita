@@ -1,7 +1,7 @@
 import { Manganato } from "./m-nato/m-nato";
 
-export function formatLink(rawInput:HTMLInputElement, eroor:HTMLParagraphElement) {
-    const supportedSites = ["https://chapmanganato.com"]
+export async function formatLink(rawInput:HTMLInputElement, eroor:HTMLParagraphElement) {
+    const supportedSites = ["https://manganato.com"]
     const link = rawInput!.value.match(/^(?<hostname>[^:\/?#]+:\/{2}[^\/?#]*)\/?(?<MangaPath>.*)/)?.groups
     //                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^     ^^^^^^^^^^^
     //                                     site from http-.com/                  after sitename  /manga/chapters/1 till the end of string
@@ -29,13 +29,13 @@ export function formatLink(rawInput:HTMLInputElement, eroor:HTMLParagraphElement
         return
     } else{
         eroor.innerHTML = ``;
-        callSite(link!.hostname, link?.MangaPath);console.log(`formatting link success: ${rawInput!.value}`)
+        await callSite(link!.hostname, link?.MangaPath);console.log(`formatting link success: ${rawInput!.value}`)
     }
 }
 
-function callSite(site:string, mangaPath:string){
+async function callSite(site:string, mangaPath:string){
     switch(site) {
-        case "https://chapmanganato.com": Manganato(mangaPath);console.log(`Site is manganato`);break
+        case "https://manganato.com":await  Manganato(mangaPath);console.log(`Site is manganato`);break
         default: console.log(`${site} passed link format but not matching`)
     }
 }

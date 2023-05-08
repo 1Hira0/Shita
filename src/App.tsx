@@ -19,18 +19,13 @@ function App() {
         <p id="eroor" className="text-red-400"></p> 
         <button
           className={`${url.length == 0 ? 'cursor-not-allowed' : 'cursor-pointer'} transition-all duration-300 ease-in-out p-2 px-3 my-2 text-xl rounded-full border-2 ${theme === 'dark' ? "bg-gray-100 text-gray-900 hover:bg-gray-900 hover:border-gray-100 hover:text-gray-100" : "bg-gray-900 text-gray-100 hover:bg-gray-100 hover:border-gray-900 hover:text-gray-900"}`}
-          onClick={() => { console.log("clicked");formatLink(document.querySelector<HTMLInputElement>('#rawLink')!, document.querySelector<HTMLParagraphElement>('#eroor')!)}}>Download Manga</button>
+          onClick={async () => { console.log("clicked");await formatLink(document.querySelector<HTMLInputElement>('#rawLink')!, document.querySelector<HTMLParagraphElement>('#eroor')!)}}>Download</button>
       </div>
       <Theme setTheme={setTheme} theme={theme} position="left" />
     </>
   )
 }
 
-function makePdf(url: string) {
-  let _url;
-  try { _url = new URL(url).hostname } catch (e) { alert(`ERROR: ${url} is not a valid url`) }
-  console.log(_url)
-}
 let i: number | undefined
 let placeholders = [
       'https://manganato.com/manga-ka960183', 
@@ -45,8 +40,5 @@ setInterval(() => {
       input.placeholder = placeholders[i];
       i++;
       }, 3000)
-
-
-
 
 export default App
