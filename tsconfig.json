@@ -22,7 +22,7 @@
   },
   "include": [
     "src"
-  ],
+, "env.ts"  ],
   "references": [
     {
       "path": "./tsconfig.node.json"

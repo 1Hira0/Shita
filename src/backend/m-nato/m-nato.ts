@@ -1,5 +1,4 @@
-import { Manga } from "../mangaType.ts";
-import {RKEY} from "./env.ts"
+import { Manga } from "../../types/mangaType.ts";
 
 export async function Manganato(MangaPath:string) {
     if (!(await isAvailable(MangaPath))) {console.log('Not found');return false}
@@ -16,36 +15,26 @@ async function isAvailable(MangaPath:string) {
 }
 
 async function getManga(id: string) {
-    const response = await fetch('https://http-cors-proxy.p.rapidapi.com/', {
-            method: 'POST',
-            headers: { 
-                'content-type': 'application/json',
-                Origin: 'www.example.com',
-                'X-Requested-With': 'www.example.com',
-                'X-RapidAPI-Key': RKEY,
-                'X-RapidAPI-Host': 'http-cors-proxy.p.rapidapi.com'
-            },
-            body: JSON.stringify({
-                url: `https://manganato.com/${id}`
-            })
-        });
-    	const result = await response.text();
-        const chaptersList = [...result.matchAll(/"chapter-name text-nowrap" href="(?<chapForward>.+?)" title=".+?">(?<chapName>.+?)<\/a>/gm)!]
-        const chapters = []
-        for(let i=0;i<chaptersList.length;i++) {
-            chapters.push({link:chaptersList[i][1], name:chaptersList[i][2]})
-        }
-        const manga :Manga = {
-            title:result.match(/"story-info-right">\n<h1>(?<title>.+?)<\/h1>/)!.groups!['title'],
-            icon_url:new URL (result.match(/"img-loading" src="(?<icon_url>.+?)" alt="/)!.groups!['icon_url']),
-            chapters:chapters
-        }
-        return manga
+    const response = await fetch(`http://localhost:3000/fetch/?url=https://manganato.com/${id}`);
+    const rawManga = await response.text();
+    const chaptersList = [...rawManga.matchAll(/"chapter-name text-nowrap" href="(?<chapForward>.+?)" title=".+?">(?<chapName>.+?)<\/a>/gm)!]
+    const chapters = []
+    for(let i=0;i<chaptersList.length;i++) {
+        chapters.push({link:await getChapter(chaptersList[i][1]), name:chaptersList[i][2]})
+    }
+    const manga :Manga = {
+        title:rawManga.match(/"story-info-right">\n<h1>(?<title>.+?)<\/h1>/)!.groups!['title'],
+        icon_url:new URL (rawManga.match(/"img-loading" src="(?<icon_url>.+?)" alt="/)!.groups!['icon_url']),
+        chapters:chapters
+    }
+    console.log(manga)
+    return manga
 } 
 
 
-async function getChapters(chapters:Manga['chapters']) {
-    for (let i = 0; i < chapters.length; i++) {
-        await fetch(chapters[i].link) //to be completed and used in above function
-    }
+async function getChapter(chapter:string) {
+    const response = await fetch(`http://localhost:3000/fetch/?url=${chapter}`);
+    const rawChapter = await response.text();
+    return rawChapter;
+
 }
