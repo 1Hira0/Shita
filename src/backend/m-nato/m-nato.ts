@@ -1,5 +1,10 @@
 import { Manga } from "../../types/mangaType.ts";
+/*
+Manganato uses Cloudflare bot-protection to prevent scraping.
+Therefore development for Manganato will not be done any further till further notice
 
+                    SORRY TO DISAPPOINT YOU BUT BYPASSING CLOUDFLARE IS HARD(OR EXPENSIVE)
+*/
 export async function Manganato(MangaPath:string) {
     const id = MangaPath.split('/')[0]
     if (!(await isAvailable(id))) {
