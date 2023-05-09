@@ -24,8 +24,7 @@ async function getManga(id: string) {
     const chaptersList = [...rawManga.matchAll(/"chapter-name text-nowrap" href="(?<chapForward>.+?)" title=".+?">(?<chapName>.+?)<\/a>/gm)!]
     const chapters = []
     for(let i=0;i<chaptersList.length;i++) {
-        const panels = await getChapter(chaptersList[i][1])
-        chapters.push({img:{src:panels[1][1], alt:panels[1][2]}, name:chaptersList[i][2]})
+        chapters.push({link:chaptersList[i][1], name:chaptersList[i][2]})
     }
     const manga :Manga = {
         title:rawManga.match(/"story-info-right">\n<h1>(?<title>.+?)<\/h1>/)!.groups!['title'],
