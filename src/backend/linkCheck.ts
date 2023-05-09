@@ -29,13 +29,23 @@ export async function formatLink(rawInput:HTMLInputElement, eroor:HTMLParagraphE
         return
     } else{
         eroor.innerHTML = ``;
-        await callSite(link!.hostname, link?.MangaPath);console.log(`formatting link success: ${rawInput!.value}`)
+        const ifFound = await callSite(link!.hostname, link?.MangaPath);
+        console.log(`formatting link success: ${rawInput!.value}`)
+        if (ifFound==="notFound") {
+            eroor.innerHTML = `No such manga found`
+        } else
+        if (ifFound===undefined) {
+            eroor.innerHTML = `Internal error. Please take a screenshot of this error and the text bar and submit at <a href='https://github.com/1Hira0/Shita/issues/new'>Project's issue page</a>`
+        }
     }
 }
 
 async function callSite(site:string, mangaPath:string){
     switch(site) {
-        case "https://manganato.com":await  Manganato(mangaPath);console.log(`Site is manganato`);break
+        case "https://manganato.com":{
+            console.log(`Site is manganato`);
+            return (await  Manganato(mangaPath));
+        }
         default: console.log(`${site} passed link format but not matching`)
     }
 }

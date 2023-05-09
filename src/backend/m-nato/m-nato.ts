@@ -1,15 +1,19 @@
 import { Manga } from "../../types/mangaType.ts";
 
 export async function Manganato(MangaPath:string) {
-    if (!(await isAvailable(MangaPath))) {console.log('Not found');return false}
+    const id = MangaPath.split('/')[0]
+    if (!(await isAvailable(id))) {
+        console.log('Not found');
+        return 'notFound'
+    }
     console.log("Found");
-    return (await getManga(MangaPath))
+    return (await getManga(id))
 }
 
-async function isAvailable(MangaPath:string) {
+async function isAvailable(id:string) {
     const response = await fetch("https://raw.githubusercontent.com/MALSync/MAL-Sync-Backup/master/data/pages/MangaNato/_index.json")
     const mangaList = await response.json()
-    if (mangaList.includes(MangaPath)) {
+    if (mangaList.includes(id)) {
         return true
     } return false
 }
@@ -20,7 +24,7 @@ async function getManga(id: string) {
     const chaptersList = [...rawManga.matchAll(/"chapter-name text-nowrap" href="(?<chapForward>.+?)" title=".+?">(?<chapName>.+?)<\/a>/gm)!]
     const chapters = []
     for(let i=0;i<chaptersList.length;i++) {
-        chapters.push({link:await getChapter(chaptersList[i][1]), name:chaptersList[i][2]})
+        chapters.push({link:chaptersList[i][1], name:chaptersList[i][2]})
     }
     const manga :Manga = {
         title:rawManga.match(/"story-info-right">\n<h1>(?<title>.+?)<\/h1>/)!.groups!['title'],
