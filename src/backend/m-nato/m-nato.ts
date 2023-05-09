@@ -24,7 +24,8 @@ async function getManga(id: string) {
     const chaptersList = [...rawManga.matchAll(/"chapter-name text-nowrap" href="(?<chapForward>.+?)" title=".+?">(?<chapName>.+?)<\/a>/gm)!]
     const chapters = []
     for(let i=0;i<chaptersList.length;i++) {
-        chapters.push({link:chaptersList[i][1], name:chaptersList[i][2]})
+        const panels = await getChapter(chaptersList[i][1])
+        chapters.push({img:{src:panels[1][1], alt:panels[1][2]}, name:chaptersList[i][2]})
     }
     const manga :Manga = {
         title:rawManga.match(/"story-info-right">\n<h1>(?<title>.+?)<\/h1>/)!.groups!['title'],
@@ -39,6 +40,8 @@ async function getManga(id: string) {
 async function getChapter(chapter:string) {
     const response = await fetch(`http://localhost:3000/fetch/?url=${chapter}`);
     const rawChapter = await response.text();
-    return rawChapter;
+    const panelsList = rawChapter.match(/<div class="container-chapter-reader">[a-zA-Z0-9-.\n\s\S]+\/> <\/div>/)![0]
+    const panels = [...panelsList.matchAll(/<img src="(?<src>\S*?)".+?alt="(?<alt>[\s\S]+?)"/g)]
+    return panels;
 
 }
