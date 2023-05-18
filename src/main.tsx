@@ -1,11 +1,14 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-import { BrowserRouter } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import Download from './pages/Download.tsx';
 
+const router = createBrowserRouter([
+  { path: "/", element: <App />, errorElement: <div>Error</div> },
+  { path: "/download", element: <Download /> },
+  { path: "/about", element: <div>About</div> },
+])
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>,
+  <RouterProvider router={router} />
 )
