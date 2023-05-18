@@ -1,13 +1,22 @@
-import React, { useState } from "react"
-import Theme from "./components/Theme"
-import { useTheme } from "./hooks/useTheme"
+import React, { useEffect, useState } from "react"
+import SwitchTheme from "./components/Theme"
+import { localTheme, useTheme } from "./hooks/useTheme"
 //import { formatLink } from "./backend/linkCheck"
-import { Link } from "react-router-dom"
+import { formatLink } from "./backend/linkCheck"
 
 type ExtendedOnClickEventType = React.MouseEvent<HTMLInputElement, MouseEvent> & { target: { placeholder: string } }
 function App() {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme } = useTheme(localTheme)
   const [url, setUrl] = useState<string>('')
+
+  const [error, setError] = useState<string>("")
+
+  useEffect(() => {
+    if (url.length === 0) { setError("A link is required") }
+    else if (url.length < 6) { setError("Link has to be atleast 6 characters long") }
+    else if (!url.includes("https://")) { setError("Not a valid URL") }
+    else { setError("") }
+  }, [url])
 
   return (
     <>
@@ -22,25 +31,26 @@ function App() {
           onClick={(e: ExtendedOnClickEventType) =>
             setUrl(e.target.placeholder === 'Manga URL' ? '' : e.target.placeholder)}
           id="rawLink" />
-        <p id="eroor" className="text-red-400"></p>
-        <Link
-          to={"/download"}
+        <p className={`${error != '' ? 'flex' : "hidden"} text-red-500`}>{error}</p>
+        <button
           className={`${url.length == 0 ? 'cursor-not-allowed' : 'cursor-pointer'} transition-all duration-300 ease-in-out p-2 px-3 my-2 text-xl rounded-full border-2 ${theme === 'dark' ? "bg-gray-100 text-gray-900 hover:bg-gray-900 hover:border-gray-100 hover:text-gray-100" : "bg-gray-900 text-gray-100 hover:bg-gray-100 hover:border-gray-900 hover:text-gray-900"}`}
-        >Download</Link>
+          onClick={async () => {
+            console.log("clicked")
+            await formatLink(
+              document.querySelector<HTMLInputElement>('#rawLink')!,
+              setError
+            )
+          }}
+        >Download</button>
       </div>
-      <Theme setTheme={setTheme} theme={theme} position="left" />
+      <SwitchTheme setTheme={setTheme} theme={theme} position="left" />
     </>
   )
 }
 
 /*
  * Download button functionality code
- onClick={async () => {
-            console.log("clicked")
-            await formatLink(
-              document.querySelector<HTMLInputElement>('#rawLink')!,
-              document.querySelector<HTMLParagraphElement>('#eroor')!)
-          }}
+ 
  */
 
 let i: number | undefined
@@ -53,9 +63,11 @@ let placeholders = [
 ]
 setInterval(() => {
   const input = document.querySelector<HTMLInputElement>('#rawLink')!
-  if (i === placeholders.length || i == undefined) { i = 0; }
-  input.placeholder = placeholders[i];
-  i++;
+  if (!(input === null)) {
+    if (i === placeholders.length || i == undefined) { i = 0; }
+    input.placeholder = placeholders[i];
+    i++;
+  }
 }, 3000)
 
 export default App
