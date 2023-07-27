@@ -1,20 +1,55 @@
 import { animeTestData } from "../data/test/someAnime";
+import { useParams } from "react-router-dom";
+import { Mangasee123 } from "../backend/mangasee/m-see"
+import { Manga } from "../types/mangaType";
+import { useState, useEffect } from "react";
+import { AnyComponent } from "discord.js";
 
-function Download(): JSX.Element {
-  return (
-    <div className="flex items-center justify-center flex-col py-3">
-      <h1 className="font-bold text-3xl text-gray-800">{animeTestData.title}</h1>
-      <img className="w-20 h-20 rounded-full" src={animeTestData.icon_url as string} />
-      <div className="w-[50vw]">
-        {animeTestData.chapters?.map(c => (
-          <div className="flex flex-row items-center justify-between w-full p-3 bg-gray-800 rounded-xl m-3">
-            <h1 className="text-white font-semibold">{c.name}</h1>
-            <a className="text-blue-400 font-medium cursor-pointer">{c.link}</a>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
+let chapFunc: (chapter:string) => Promise<void>
+
+function Download(): JSX.Element { //cant be async
+	let [manga, updateManga] = useState(animeTestData)
+	let params = useParams()
+	console.log(params)
+	useEffect(() => {
+		getMedia()
+			.then(media => {
+				updateManga(media.manga)
+				chapFunc = media.chapFunc
+			})
+	})
+	const getMedia = async () => {
+		let m
+		switch (params.site) {
+			case "mangasee" : m = await Mangasee123(params.id!); 
+		}
+		console.log("THIS IS THE RESPONSE"+m)
+		return m!
+	}
+	
+  	return (
+		<>
+  	  	<div  style={{backgroundColor: '#000000', justifyContent:"center", display:'flex', height:"100%"}}>
+			<p id="status">hmmm</p>
+  	  	    <div style={{margin: '3rem 5rem',  width: 54+'rem', backgroundColor:'#121212'}}>
+  	  	    	<img src={manga.icon_url as string} style={{width:50+'px',height:'auto'}}/>
+					<h1>{manga.title}</h1>
+  	  	    	<table className='chapters-table' style={{width:100+"%"}}>
+						<thead><tr><th>Title</th><th>Download as PDF</th></tr></thead>
+  	  	    	    <tbody style={{width:"100%"}}>
+  	  	    	         {manga.chapters?.map(c => (
+  	  	    	        <tr className="chapter" key={c.name}>
+  	  	    	            <td className="chapter-title"><a href={c.link}>{c.name}</a></td>
+  	  	    	            <td className="ch-download"><button onClick={() => {
+								chapFunc(c.link)
+							}}>Download</button></td>
+  	  	    	        </tr>))}
+  	  	    	    </tbody>
+  	  	    	</table>        
+  	  	  </div>
+  	  	</div>
+		</>
+  	)
 }
 
 export default Download
