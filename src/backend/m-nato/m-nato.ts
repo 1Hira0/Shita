@@ -1,9 +1,9 @@
 import { Manga } from "../../types/mangaType.ts";
 /*
-Manganato uses Cloudflare bot-protection to prevent scraping.
-Therefore development for Manganato will not be done any further till further notice
+        Manganato uses Cloudflare bot-protection to prevent scraping.
+        Therefore development for Manganato will pasued till further notice
 
-                    SORRY TO DISAPPOINT YOU BUT BYPASSING CLOUDFLARE IS HARD(OR EXPENSIVE)
+        SORRY TO DISAPPOINT YOU BUT BYPASSING CLOUDFLARE IS HARD(OR EXPENSIVE)
 */
 export async function Manganato(MangaPath:string) {
     const id = MangaPath.split('/')[0]
@@ -36,6 +36,7 @@ async function getManga(id: string) {
         icon_url:new URL (rawManga.match(/"img-loading" src="(?<icon_url>.+?)" alt="/)!.groups!['icon_url']),
         chapters:chapters
     }
+    getChapter(chapters[0].link)
     console.log(manga)
     return manga
 } 
