@@ -1,5 +1,4 @@
 import { Manga } from "../../types/mangaType.ts";
-import { forwardMessage } from "../linkCheck.ts";
 import { toPDF } from "../toPDF.ts";
 
 export async function Mangasee123(id:string) {
