@@ -1,9 +1,7 @@
 import { animeTestData } from "../data/test/someAnime";
 import { useParams } from "react-router-dom";
 import { Mangasee123 } from "../backend/mangasee/m-see"
-import { Manga } from "../types/mangaType";
 import { useState, useEffect } from "react";
-import { AnyComponent } from "discord.js";
 
 let chapFunc: (chapter:string) => Promise<void>
 
@@ -14,6 +12,7 @@ function Download(): JSX.Element { //cant be async
 	useEffect(() => {
 		getMedia()
 			.then(media => {
+				if (!media) return;
 				updateManga(media.manga)
 				chapFunc = media.chapFunc
 			})
@@ -31,7 +30,7 @@ function Download(): JSX.Element { //cant be async
 		<>
   	  	<div  style={{backgroundColor: '#000000', justifyContent:"center", display:'flex', height:"100%"}}>
 			<p id="status">hmmm</p>
-  	  	    <div style={{margin: '3rem 5rem',  width: 54+'rem', backgroundColor:'#121212'}}>
+  	  	    <div style={{overflow:"auto", margin: '3rem 5rem',  width: '69em', backgroundColor:'#121212'}}>
   	  	    	<img src={manga.icon_url as string} style={{width:50+'px',height:'auto'}}/>
 					<h1>{manga.title}</h1>
   	  	    	<table className='chapters-table' style={{width:100+"%"}}>
